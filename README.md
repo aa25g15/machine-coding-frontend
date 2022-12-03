@@ -2,6 +2,21 @@
 
 ## Resources
 * https://youtu.be/9mPNtzRu_RU
+* https://www.youtube.com/watch?v=Ex0qS1qg6NI&ab_channel=AkshaySaini
+* https://www.youtube.com/watch?v=uACMeA81QaM&ab_channel=AkshaySaini
+
+## Tips
+* Use Vanilla JS only
+* Time management - One of the main reasons for failure
+  * First 5 minutes:
+    * Ask questions
+    * Understand the problem statement
+    * Take a pen and draw a UI
+    * Think about the DS to use
+    * Create a mental map of how you will spend the rest of the time
+* Prepare to code from scratch - Create a Vanilla JS template that you are comfortable with
+* Don't get lost in coding!
+  * Revisit your code, see how you have progressed every 15 minutes, re-align yourself if needed, things may not go according to plan!
 
 ## Develop a Comment Widget
 ### Features:
@@ -27,6 +42,7 @@
 * Filtering via tags
 
 ## Email Web App or Client
+### Features:
 * Had to look something like Outlook
 * Don't have to fetch data but create you own data and store it in a data structure
 * Three sections like in most clients
@@ -42,3 +58,12 @@
 Basically, implement the sudoku game. It is a 9X9 grid.
 
 The goal of sudoku is simple: fill in the numbers 1-9 exactly once in every row, column, and 3x3 region. For example, look at the above puzzle and compare it to the solved version below. Notice that every row, column and 3x3 region contain every number from 1-9 exactly once.
+
+## Comparison App
+An app to compare 2 or more things
+
+### Features:
+* Can use GitHub API for example to get details of different users and compare information such as number of commits, stars, repos etc.
+* Ability to change the comparison objects
+* Different color schemes for who is better
+* Responsiveness
