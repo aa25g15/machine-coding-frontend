@@ -17,6 +17,29 @@
 * Prepare to code from scratch - Create a Vanilla JS template that you are comfortable with
 * Don't get lost in coding!
   * Revisit your code, see how you have progressed every 15 minutes, re-align yourself if needed, things may not go according to plan!
+  * Keep check on time!
+  * In the last 15 minutes, even if you have implemented 3/10 features, make sure they work! Make sure that 15 minutes before, your code is submittable
+* Technical things you should prepare
+  * Shortcuts in your IDE
+  * Fetching data from API calls (specifically GET requests)
+  * Library functions (Eg. Lodash)
+  * DOM manipulation using Vanilla JS
+  * Local storage - They sometimes expect you to maintain state even after hard refresh
+  * UI:
+    * Searching
+    * Sorting
+    * Filtering
+    * Tagging
+    * Flexbox in CSS
+    * Responsiveness of App
+  * Thinking recursively - Is needed many times, for example, infinitely nested object
+  * Code quality:
+    * Is your code modular - Small functions that do 1 specific thing, break down code into chunks, separate HTML, CSS, JS
+    * Is it scalable? - Would major adjustments be needed to implement new features?
+    * Is it readable - Use camelCase and PascalCase, long descriptive names, anyone should understand the code without comments
+* No distractions!
+* Test your code every few minutes
+* Cherry on cake - Impress the interviewer
 
 ## Develop a Comment Widget
 ### Features:
