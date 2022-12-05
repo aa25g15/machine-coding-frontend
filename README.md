@@ -14,14 +14,14 @@
     * Take a pen and draw a UI
     * Think about the DS to use
     * Create a mental map of how you will spend the rest of the time
-* Prepare to code from scratch - Create a Vanilla JS template that you are comfortable with
+* Prepare to code from scratch - Create a Vanilla JS template that you are comfortable with - https://github.com/aa25g15/vanilla-js-template
 * Don't get lost in coding!
   * Revisit your code, see how you have progressed every 15 minutes, re-align yourself if needed, things may not go according to plan!
   * Keep check on time!
   * In the last 15 minutes, even if you have implemented 3/10 features, make sure they work! Make sure that 15 minutes before, your code is submittable
 * Technical things you should prepare
   * Shortcuts in your IDE
-  * Fetching data from API calls (specifically GET requests)
+  * Fetching data from API calls (specifically GET requests) - https://github.com/aa25g15/fetch-api/blob/main/README.md
   * Library functions (Eg. Lodash)
   * DOM manipulation using Vanilla JS - https://github.com/aa25g15/dom-manipulation-js/blob/main/README.md
   * Local storage - They sometimes expect you to maintain state even after hard refresh
@@ -32,6 +32,18 @@
     * Tagging
     * Flexbox in CSS
     * Responsiveness of App
+    ```javascript
+    export const respondTo = {
+     XSMALL: '@media only screen and (max-width: 479px)',
+     SMALL: '@media only screen and (min-width: 480px)',
+     MEDIUM: '@media only screen and (min-width: 768px)',
+     LARGE: '@media only screen and (min-width: 1024px)',
+     XLARGE: '@media only screen and (min-width: 1280px)',
+     XXLARGE: '@media only screen and (min-width: 1600px)',
+     MOBILELANDSCAPE:
+       '@media only screen and (orientation: landscape) and (min-device-width: 319px) and (max-device-width: 1024px)',
+    };
+    ```
   * Thinking recursively - Is needed many times, for example, infinitely nested object
   * Code quality:
     * Is your code modular - Small functions that do 1 specific thing, break down code into chunks, separate HTML, CSS, JS
