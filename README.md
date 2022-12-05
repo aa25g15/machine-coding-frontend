@@ -24,7 +24,7 @@
   * Fetching data from API calls (specifically GET requests) - https://github.com/aa25g15/fetch-api/blob/main/README.md
   * Library functions (Eg. Lodash)
   * DOM manipulation using Vanilla JS - https://github.com/aa25g15/dom-manipulation-js/blob/main/README.md
-  * Local storage - They sometimes expect you to maintain state even after hard refresh
+  * Local storage - They sometimes expect you to maintain state even after hard refresh - https://github.com/aa25g15/browsers-storage-and-cookies/blob/main/README.md
   * UI:
     * Searching
     * Sorting
