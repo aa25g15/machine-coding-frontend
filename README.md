@@ -53,6 +53,34 @@
 * Test your code every few minutes
 * Cherry on cake - Impress the interviewer
 
+## Implementing a Debounce
+```javascript
+const debounce = (func, debounceTime = 250) => {
+ let timerId = null;
+ return (...args) => {
+  clearInterval(timerId);
+  timerId = setTimeout(() => {
+   func.apply(this, args);
+  }, debounceTime);
+ }
+}
+```
+
+## Implementing a Throttle
+```javascript
+const throttle = (func, throttleTime = 250) => {
+ let isPaused = false;
+ return (...args) => {
+  if(isPaused) return;
+  isPaused = true;
+  setTimeout(() => {
+   func.apply(this, args);
+   isPaused = false;
+  }, throttleTime)
+ }
+}
+```
+
 ## Develop a Comment Widget
 ### Features:
 * Input box to make a comment
