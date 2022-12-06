@@ -60,6 +60,251 @@
 * Edit comment, delete comment
 * Some nice to have features:
   * Like comment
+
+### My Solution:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Machine Coding Round</title>
+    <link rel="stylesheet" href="./styles.css"></link>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <script defer src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <script defer src="./app.js"></script>
+</head>
+<body>
+    <div class="add-comment-card">
+        <form class="add-comment-form">
+            <input type="text" class="text-input" minlength="10" />
+            <button type="submit" class="btn">Add Comment</button>
+        </form>
+    </div>
+    <div class="added-comments-container">
+        No comments
+    </div>
+</body>
+</html>
+```
+
+```css
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    background: whitesmoke;
+    color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+}
+
+.add-comment-card{
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    display: flex;
+    padding: 1rem;
+    border-radius: 1rem;
+    width: calc(100vw - 1rem);
+}
+
+.add-comment-card > form {
+    display: flex;
+    width: 100%;
+}
+
+.added-comments-container{
+    margin-top: 2rem;
+    width: calc(100vw - 1rem);
+    padding: 1rem;
+    border-radius: 1rem;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.comment-container{
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    border-radius: 1rem;
+    padding: 2rem 1rem;
+    margin: 1rem;
+}
+
+.comment-text-container {
+    display: flex;
+    align-items: center;
+}
+
+.delete-icon{
+    margin-left: auto;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem;
+    background-color: red;
+    border-radius: 50%;
+}
+
+.reply-container{
+    display: flex;
+    align-items: center;
+    margin: 1rem 0;
+}
+
+.reply-input{
+    width: 100%;
+    margin-right: 1rem;
+    border-radius: 100vh;
+    padding: 0 1rem;
+    min-height: 2rem;
+}
+
+.reply-icon{
+    margin-left: auto;
+    color: white;
+    cursor: pointer;
+    padding: 0.5rem;
+    background-color: grey;
+    border-radius: 50%;
+}
+
+.text-input{
+    border-radius: 100vh;
+    padding: 0 1rem;
+    width: 100%;
+}
+
+.btn {
+    height: 3rem;
+    width: 10rem;
+    background: green;
+    color: white;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    margin-left: 1rem;
+    border-radius: 100vh;
+}
+
+@media screen and (min-width: 480px) {
+    .added-comments-container{
+        padding: 5rem; 
+        width: calc(100vw - 10rem);
+    }
+
+    .add-comment-card{
+        padding: 5rem;
+        width: calc(100vw - 10rem);
+    }
+
+    html, body {
+        padding: 2rem 5rem;
+    }
+}
+```
+
+```javascript
+class CommentStore {
+  store = [];
+  idCounter = 0;
+
+  addNewComment = (commentText) => {
+    this.store.push({
+      id: this.idCounter++,
+      text: commentText,
+      replies: [],
+    });
+  };
+
+  deleteComment = (id, list) => {
+    const index = list.findIndex((comment) => comment.id === id);
+    if (index >= 0) {
+      list.splice(index, 1);
+    }
+  };
+
+  addReply = (commentObject, commentText) => {
+    commentObject.replies.push({
+      id: this.idCounter++,
+      text: commentText,
+      replies: [],
+    });
+  };
+}
+
+const commentStore = new CommentStore();
+const form = document.querySelector("form.add-comment-form");
+const textInput = document.querySelector("input.text-input");
+let commentsContainer = document.querySelector("div.added-comments-container");
+
+const createCommentElement = (commentObject, list) => {
+  const commentContainer = document.createElement("div");
+  commentContainer.classList.add("comment-container");
+  commentContainer.dataset.id = commentObject.id;
+  commentContainer.innerHTML = `
+  <div class="comment-text-container">
+    ${commentObject.text}
+    <span class="material-symbols-outlined delete-icon">
+      delete
+    </span>
+  </div>
+  <form class="reply-container">
+    <input minLength="10" class="reply-input" data-id=${commentObject.id} >
+    <span type="submit" role="button" class="material-symbols-outlined reply-icon">reply</span>
+  </form>
+  `;
+  commentContainer
+    .querySelector(".delete-icon")
+    ?.addEventListener("click", () => {
+      commentStore.deleteComment(commentObject.id, list);
+      updateCommentsDisplay();
+    });
+
+  commentContainer
+    .querySelector(".reply-container")
+    ?.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const replyInput = commentContainer.querySelector(".reply-input");
+      commentStore.addReply(commentObject, replyInput.value);
+      updateCommentsDisplay();
+    });
+  return commentContainer;
+};
+
+const generateCommentsForList = (list, container) => {
+  list.forEach((comment) => {
+    const commentElement = createCommentElement(comment, list);
+    container.appendChild(commentElement);
+    if (comment.replies.length > 0) {
+      const subContainer = document.createElement("div");
+      subContainer.classList.add("replies-container");
+      commentElement.appendChild(subContainer);
+      generateCommentsForList(comment.replies, subContainer);
+    }
+  });
+};
+
+const updateCommentsDisplay = () => {
+  if (commentsContainer) {
+    commentsContainer.remove();
+    commentsContainer = document.createElement("div");
+    commentsContainer.classList.add("added-comments-container");
+    generateCommentsForList(commentStore.store, commentsContainer);
+    if (commentStore.store.length === 0) {
+      commentsContainer.innerText = "No comments";
+    }
+    document.body.appendChild(commentsContainer);
+  }
+};
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  commentStore.addNewComment(textInput.value);
+  updateCommentsDisplay();
+});
+```
   
 ## Develop a TODO list or a Kanban Board
 ### Features:
