@@ -340,6 +340,321 @@ form.addEventListener("submit", (event) => {
 * Add a new tasks having a heading and a description for example
 * The most difficult part is to add drag and drop functionality for tasks and even the whole lists (the YouTube explainer said that he had to use Google a lot for this)
 
+### My Solution (Does Not Have All The Features):
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Machine Coding Round</title>
+
+    <link rel="stylesheet" href="./styles.css"></link>
+    <script defer src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <script defer src="./app.js"></script>
+</head>
+<body>
+    <div id="all-list-container"></div>
+    <button id="add-new-list" class="icon-button">
+        <span class="material-symbols-outlined">
+            add
+        </span>
+    </button>
+    <div id="add-list-form-container">
+        <form id="add-list-form">
+            <input name="taskHeading" placeholder="Task heading" id="add-task--heading-input" class="input" type="text" minlength="10" required>
+            <input name="taskDescription" placeholder="Task description" id="add-task-description-input" class="input" type="text" minlength="10" required>
+            <input name="listName" placeholder="List name" id="add-list-form-input" class="input" type="text" minlength="5" required>
+            <button type="submit" class="btn">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
+```
+
+```css
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    background: whitesmoke;
+    color: black;
+}
+
+#all-list-container{
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 2rem;
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.list-container{
+    padding: 1rem;
+    width: 100%;
+    border: 1px solid black;
+    position: relative;
+    height: 20rem;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.icon-button{
+  height: 3rem;
+  width: 3rem;
+  border-radius: 50%;
+  color: white;
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  cursor: pointer;
+}
+
+#add-new-list{
+  background: green;
+}
+
+.delete-list-button{
+  background: red;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.list-heading{
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.task{
+  border: 1px solid black;
+  padding: 1rem;
+  margin: 2rem 0;
+}
+
+.task-heading{
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.task-description{
+    font-size: 12px;
+}
+
+#add-list-form-container{
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  background: rgba(0,0,0,0.6);
+  justify-content: center;
+  align-items: center;
+  display: none;
+}
+
+#add-list-form{
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    animation: appear 0.3s ease-in;
+    width: calc(100vw - 2rem);
+}
+
+.input {
+    min-height: 2rem;
+    padding: 0 1rem;
+    width: 100%;
+    margin: 1rem 0;
+}
+
+@keyframes appear {
+    0% {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.btn{
+    min-height: 3rem;
+    min-width: 10rem;
+}
+
+@media screen and (min-width: 480px) {
+  #all-list-container {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  
+  #add-list-form{
+    width: 60vw;
+  }
+}
+```
+
+```javascript
+class Store {
+  data = [];
+  counter = 0;
+  taskCounter = 0;
+
+  addTask = (formData) => {
+    const index = this.data.findIndex(
+      (list) => list.name === formData.listName
+    );
+
+    if (index >= 0) {
+      // list exists
+      this.data[index].tasks.push({
+        id: this.taskCounter++,
+        heading: formData.taskHeading,
+        description: formData.taskDescription,
+      });
+    } else {
+      this.data.push({
+        id: this.counter++, // unique list id
+        name: formData.listName,
+        tasks: [
+          {
+            id: this.taskCounter++,
+            heading: formData.taskHeading,
+            description: formData.taskDescription,
+          },
+        ],
+      });
+    }
+  };
+
+  deleteList = (listObject) => {
+    const index = this.data.findIndex((list) => list.id === listObject.id);
+
+    if (index >= 0) {
+      this.data.splice(index, 1);
+    }
+  };
+}
+
+const debounce = (func, time = 1000) => {
+  let timerId = null;
+  return (...args) => {
+    clearInterval(timerId);
+    timerId = setTimeout(() => {
+      func.apply(this, args);
+    }, time);
+  };
+};
+
+const dataStore = new Store();
+const addListButton = document.getElementById("add-new-list");
+const allListContainer = document.getElementById("all-list-container");
+const addListForm = document.getElementById("add-list-form");
+const addListFormModal = document.getElementById("add-list-form-container");
+
+const render = () => {
+  const children = [];
+  dataStore.data.forEach((listObject) => {
+    children.push(getListComponent(listObject));
+  });
+  allListContainer.replaceChildren(...children);
+};
+
+const getTaskComponent = (taskObject) => {
+  const taskElement = document.createElement("div");
+  taskElement.classList.add("task");
+  taskElement.innerHTML = `
+  <div class="task-heading">
+    ${taskObject.heading}
+  </div>
+  <div class="task-description">
+    ${taskObject.description}
+  </div>
+  `;
+
+  return taskElement;
+};
+
+const getListComponent = (listObject) => {
+  const listElement = document.createElement("div");
+  listElement.classList.add("list-container");
+  listElement.innerHTML = `
+  <div contenteditable="true" class="list-heading" id=${listObject.id}>
+    ${listObject.name}
+  </div>
+  <div class="task-container"></div>
+  <div class="icon-button delete-list-button">
+    <span class="material-symbols-outlined">
+      delete
+    </span>
+  <div>
+  `;
+
+  const taskContainer = listElement.querySelector(".task-container");
+  listObject.tasks.forEach((taskObject) => {
+    taskContainer.appendChild(getTaskComponent(taskObject));
+  });
+
+  const deleteListbutton = listElement.querySelector(".delete-list-button");
+  deleteListbutton?.addEventListener("click", () => {
+    dataStore.deleteList(listObject);
+    render();
+  });
+
+  listElement.querySelector(".list-heading")?.addEventListener(
+    "input",
+    debounce((event) => {
+      listObject.name = event.target.innerText;
+      console.log(dataStore.data);
+      render();
+    })
+  );
+
+  return listElement;
+};
+
+addListButton?.addEventListener("click", () => {
+  if (addListFormModal) {
+    addListFormModal.style.display = "flex";
+  }
+});
+
+addListForm?.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  const formData = {};
+
+  addListForm.querySelectorAll("input").forEach((input) => {
+    formData[input.name] = input.value;
+  });
+
+  dataStore.addTask(formData);
+  render();
+
+  if (addListFormModal) {
+    addListFormModal.style.display = "none";
+  }
+});
+```
+
 ## Develop a Food Ordering App
 ### Features:
 * Make a get all to get a list of restaurants with details such as ETA, rating, name, location, menu, tags such as veg/non-veg etc.
