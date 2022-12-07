@@ -682,6 +682,210 @@ Basically, implement the sudoku game. It is a 9X9 grid.
 
 The goal of sudoku is simple: fill in the numbers 1-9 exactly once in every row, column, and 3x3 region. For example, look at the above puzzle and compare it to the solved version below. Notice that every row, column and 3x3 region contain every number from 1-9 exactly once.
 
+### My Solution - Took Some Figuring Out The Validations
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Machine Coding Round</title>
+
+    <link rel="stylesheet" href="./styles.css"></link>
+    <script defer src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <script defer src="./app.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <div id="game-container"></div>
+    </div>
+</body>
+</html>
+```
+
+```css
+* {
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    background: whitesmoke;
+    color: black;
+}
+
+.app-container{
+  display: flex;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+#game-container{
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  grid-template-rows: repeat(9, minmax(0, 1fr));
+  background: palegoldenrod;
+  gap: 0;
+  margin: 1rem;
+  aspect-ratio: 1;
+  max-height: 80vh;
+  max-width: 80vw;
+  border: 2px solid red;
+}
+
+.number-box{
+  aspect-ratio: 1;
+  text-align: center;
+  width: 100%;
+  font-size: 100%;
+  border: 1px solid black;
+}
+```
+
+```javascript
+class State {
+  state = [
+    [1, 6, 8, 4, 5, 7, 9, 3, 2],
+    [5, 7, 2, 3, 9, 1, 4, 6, 8],
+    [9, 3, 4, 6, 2, 8, 5, 1, 7],
+    [8, 2, 9, 7, 4, 3, 1, 5, 6],
+    [6, 5, 1, 2, 8, 9, 3, 7, 4],
+    [7, 4, 3, 5, 1, 6, 2, 8, 9],
+    [3, 9, 5, 8, 7, 2, 6, 4, 1],
+    [4, 1, 7, 9, 6, 5, 8, 2, 3],
+    [2, 8, 6, 1, 3, 4, 7, 9, null],
+  ];
+
+  setState = (row, col, value) => {
+    this.state[row][col] = value;
+  };
+
+  validateRow = (row, rowIndex) => {
+    const set = new Set();
+    for (let i = 0; i < row.length; i++) {
+      if (!row[i] || set.has(row[i])) {
+        console.log("row failed", rowIndex, row[i]);
+        return false;
+      }
+      set.add(row[i]);
+    }
+    return true;
+  };
+
+  validateColumn = (colIndex) => {
+    const set = new Set();
+    this.state.forEach((row) => {
+      if (!row[colIndex] || set.has(row[colIndex])) {
+        console.log("col failed", colIndex, row[colIndex]);
+        return false;
+      }
+      set.add(row[colIndex]);
+    });
+    return true;
+  };
+
+  validateRegion = (rowStart, rowEnd, colStart, colEnd) => {
+    const set = new Set();
+    for (let row = rowStart; row <= rowEnd; row++) {
+      for (let col = colStart; col <= colEnd; col++) {
+        if (!this.state[row][col] || set.has(this.state[row][col])) {
+          console.log(
+            "region failed",
+            [rowStart, rowEnd, colStart, colEnd],
+            this.state[row][col]
+          );
+          return false;
+        }
+        set.add(this.state[row][col]);
+      }
+    }
+    return true;
+  };
+
+  validateSudoku = () => {
+    /**
+     * Fill in the numbers 1-9 exactly once in every row, column, and 3x3 region
+     */
+    console.log(this.state);
+
+    this.state.forEach((row, index) => {
+      if (!this.validateRow(row, index)) return false;
+    });
+
+    for (let i = 0; i < this.state.length; i++) {
+      if (!this.validateColumn(i)) return false;
+    }
+
+    if (
+      !this.validateRegion(0, 2, 0, 2) ||
+      !this.validateRegion(3, 5, 0, 2) ||
+      !this.validateRegion(6, 8, 0, 2) ||
+      !this.validateRegion(0, 2, 3, 5) ||
+      !this.validateRegion(3, 5, 3, 5) ||
+      !this.validateRegion(6, 8, 3, 5) ||
+      !this.validateRegion(0, 2, 6, 8) ||
+      !this.validateRegion(3, 5, 6, 8) ||
+      !this.validateRegion(6, 8, 6, 8)
+    ) {
+      return false;
+    }
+
+    return true;
+  };
+}
+
+const gameState = new State();
+const gameContainer = document.getElementById("game-container");
+
+const setBorder = () => {
+  if (gameState.validateSudoku()) {
+    // Game has been solved!
+    gameContainer.style.border = "2px solid green";
+  } else {
+    gameContainer.style.border = "2px solid red";
+  }
+};
+
+const renderGame = () => {
+  if (gameContainer) {
+    gameState.state.forEach((row, rowIndex) => {
+      row.forEach((value, colIndex) => {
+        const numberBox = document.createElement("input");
+        numberBox.classList.add("number-box");
+        if (value) {
+          numberBox.disabled = true;
+        }
+        numberBox.value = value;
+        numberBox.type = "number";
+        numberBox.maxLength = "1";
+        gameContainer.appendChild(numberBox);
+        numberBox.addEventListener("change", (event) => {
+          if (!event.target.value.match(/^[1-9]{1}$/)) {
+            numberBox.value = value;
+            setBorder();
+            return;
+          }
+          gameState.setState(rowIndex, colIndex, Number(event.target.value));
+          setBorder();
+        });
+      });
+    });
+  }
+};
+
+renderGame();
+```
+
 ## Comparison App
 An app to compare 2 or more things
 
